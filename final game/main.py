@@ -41,7 +41,7 @@ class Game:
         self.score = 0
 # this code gives you the actual score number
     def new(self):
-        self.score = 0
+        self.score = 100
         self.run()
 
     def run(self):
@@ -69,8 +69,9 @@ class Game:
         # still need to figure out how to make it kill you and restart it just closes the tab.
         hits = pg.sprite.spritecollide(self.Bell, self.obstacles, False)
         if hits:
-              
-            self.running = False
+            self.score -= 2 
+            if self.score == 0:
+                self.running = False
 
     # This fills the screen and also displays 'Score' 
     def draw(self):
