@@ -1,14 +1,4 @@
-# This file was created by Carlos Gomez
-
-'''
-Make a game called Bellarun that has things that hurt and heal you
-obstacles to make it harder
-make it to the finish line
-use libraries to make mobs and more
-'''
-
-# changes being made
-
+# import libraries and modules
 import pygame as pg
 from pygame.sprite import Sprite
 import random
@@ -18,76 +8,140 @@ from settings import *
 from sprites import *
 import math
 
-vec = pg.math.Vector2 
+vec = pg.math.Vector2
 
+# setup asset folders here - images sounds etc.
 game_folder = os.path.dirname(__file__)
 img_folder = os.path.join(game_folder, 'images')
 snd_folder = os.path.join(game_folder, 'sounds')
 
+pg.init()
+
+screen = pg.display.set_mode((WIDTH, HEIGHT))
+background = pg.image.load(os.path.join(img_folder, 'BG.png')).convert()
 
 class Game:
     def __init__(self):
+        # init pygame and create a window
         pg.init()
         pg.mixer.init()
         self.screen = pg.display.set_mode((WIDTH, HEIGHT))
-        pg.display.set_caption("Bell Jump")
+        pg.display.set_caption("Bellarun")
         self.clock = pg.time.Clock()
         self.running = True
         self.all_sprites = pg.sprite.Group()
         self.obstacles = pg.sprite.Group()
-        self.Bell = Bell(self)
-        self.all_sprites.add(self.Bell)    
+        self.player = Player(self)
+        self.all_sprites.add(self.player)    
         self.all_sprites.add(self.obstacles)
         self.score = 0
-# this code gives you the actual score number
-    def new(self):
-        self.score = 100
-        self.run()
+        
+    def new(self): 
+        # create a group for all sprites
+        self.score = 0
+        self.all_sprites = pg.sprite.Group()
+        self.all_platforms = pg.sprite.Group()
+        self.all_mobs = pg.sprite.Group()
+        # instantiate classes
+        self.player = Player(self)
+        # add instances to groups
+        self.all_sprites.add(self.player)
+        self.ground = Platform(*GROUND)
+        self.all_sprites.add(self.ground)
 
-    def run(self):
-        while self.running:
-            self.clock.tick(FPS)
-            self.events()
-            self.update()
-            self.draw()
-
-    def events(self):
-        for event in pg.event.get():
-            if event.type == pg.QUIT:
-                self.running = False
-
-    def update(self):
-        self.all_sprites.update()
-
-        # Spawn new obstacles at random intervals
+        for p in PLATFORM_LIST:
+            # instantiation of the Platform class
+            plat = Platform(*p)
+            self.all_sprites.add(plat)
+            self.all_platforms.add(plat)
+        # create mobs...
         if random.randrange(100) < 0.8  :
             obstacle = Obstacle(self)
             self.obstacles.add(obstacle)
             self.all_sprites.add(obstacle)
 
-        # Checks for collisions with obstacles, if collision does happen you instantly die- 
-        # still need to figure out how to make it kill you and restart it just closes the tab.
-        hits = pg.sprite.spritecollide(self.Bell, self.obstacles, False)
-        if hits:
-            self.score -= 2 
-            if self.score == 0:
-                self.running = False
+        self.run()
+    
+    def run(self):
+        self.playing = True
+        while self.playing:
+            self.clock.tick(FPS)
+            self.events()
+            self.update()
+            self.draw()
 
-    # This fills the screen and also displays 'Score' 
+    def update(self):
+        self.all_sprites.update()
+         # this prevents the player from jumping up through a platform
+        hits = pg.sprite.spritecollide(self.player, self.all_platforms, False)
+        ghits = pg.sprite.collide_rect(self.player, self.ground)
+        if hits or ghits:
+            if self.player.vel.y < 0:
+                self.player.vel.y = -self.player.vel.y
+            # this is what prevents the player from falling through the platform when falling down...
+            elif self.player.vel.y > 0:
+                if hits:
+                    self.player.pos.y = hits[0].rect.top
+                    self.player.vel.y = 0
+                    self.player.vel.x = hits[0].speed*1.5
+                if ghits:
+                    self.player.pos.y = self.ground.rect.top
+                    self.player.vel.y = 0
+
+    def events(self):
+        for event in pg.event.get():
+        # check for closed window
+            if event.type == pg.QUIT:
+                if self.playing:
+                    self.playing = False
+                self.running = False
+                
     def draw(self):
+        ############ Draw ################
+        # draw the background screen
         self.screen.fill(BLACK)
+        self.screen.blit(background, (0, 0))
+
+    # Draw all sprites
         self.all_sprites.draw(self.screen)
-        self.draw_text(f"Score: {self.score}", 22, WHITE, WIDTH / 2, 20)
+        self.draw_text("Health: " + str(self.player.hitpoints), 22, WHITE, WIDTH/2, HEIGHT/10)
+
+    # After drawing everything, flip the display
         pg.display.flip()
 
+ 
+    
     def draw_text(self, text, size, color, x, y):
-        font = pg.font.Font(None, size)
+        font_name = pg.font.match_font('arial')
+        font = pg.font.Font(font_name, size)
         text_surface = font.render(text, True, color)
-        text_rect = text_surface.get_rect(center=(x, y))
+        text_rect = text_surface.get_rect()
+        text_rect.midtop = (x,y)
         self.screen.blit(text_surface, text_rect)
 
+    def show_start_screen(self):
+        pass
+    def show_go_screen(self):
+        pass
+
+class Background(pg.sprite.Sprite):
+    def __init__(self, image_path):
+        super().__init__()
+
+        # Load the background image
+        self.image = pg.image.load(os.path.join(img_folder, image_path))
+        self.rect = self.image.get_rect()
+
+        # Set the initial position of the background
+        self.rect.topleft = (0, 0)
+
+    def update(self):
+        # You can add any update logic here if needed
+        pass
+
+g = Game()
+while g.running:
+    g.new()
 
 
-game = Game()
-game.new()
 pg.quit()

@@ -1,9 +1,6 @@
-# This file was created by Carlos Gomez
-
 import pygame as pg
 from pygame.sprite import Sprite
-import random
-from random import randint
+
 from pygame.math import Vector2 as vec
 import os
 from settings import *
@@ -12,39 +9,72 @@ from settings import *
 game_folder = os.path.dirname(__file__)
 img_folder = os.path.join(game_folder, 'images')
 snd_folder = os.path.join(game_folder, 'sounds')
-#  Defines the bell that we see runnning in the game and controls his jump
-class Bell(pg.sprite.Sprite):
+
+class Player(Sprite):
     def __init__(self, game):
-        super().__init__()
+        Sprite.__init__(self)
+        # self.image = pg.Surface((50, 50))
+        # self.image.fill(GREEN)
+        # use an image for player sprite...
         self.game = game
-        self.image = pg.Surface((25, 25))
         self.image = pg.image.load(os.path.join(img_folder, 'theBigBell.png')).convert()
+        self.image.set_colorkey(BLACK)
         self.rect = self.image.get_rect()
-        self.rect.midbottom = (WIDTH // 4, HEIGHT)
-        self.vel = vec(0, 0)
-        self.acc = vec(0, PLAYER_GRAV)  
-        self.jumping = False
-
-    def jump(self):
-        if not self.jumping:
-            self.vel.y = -20
-            self.jumping = True
-
-    def update(self):
-        self.acc = vec(0, PLAYER_GRAV)
+        self.rect.center = (0, 0)
+        self.pos = vec(WIDTH/2, HEIGHT/2)
+        self.vel = vec(0,0)
+        self.acc = vec(0,0)
+        self.hitpoints = 100
+    def controls(self):
         keys = pg.key.get_pressed()
+        if keys[pg.K_a]:
+            self.acc.x = -5
+        if keys[pg.K_d]:
+            self.acc.x = 5
         if keys[pg.K_SPACE]:
             self.jump()
-
+    def jump(self):
+        hits = pg.sprite.spritecollide(self, self.game.all_platforms, False)
+        ghits = pg.sprite.collide_rect(self, self.game.ground)
+        if hits or ghits:
+            print("i can jump")
+            self.vel.y = -PLAYER_JUMP
+    def update(self):
+        # CHECKING FOR COLLISION WITH MOBS HERE>>>>>
+        self.acc = vec(0,PLAYER_GRAV)
+        self.controls()
+        # if friction - apply here
+        self.acc.x += self.vel.x * -PLAYER_FRIC
+        # self.acc.y += self.vel.y * -0.3
+        # equations of motion
         self.vel += self.acc
-        self.rect.y += self.vel.y
+        self.pos += self.vel + 0.5 * self.acc
+        self.rect.midbottom = self.pos
 
-        # Keep the player on the screen
-        if self.rect.bottom > HEIGHT:
-            self.rect.bottom = HEIGHT
-            self.jumping = False
-
-#This class is dedicated to the mobs or obstacles
+# platforms
+class Platform(Sprite):
+    def __init__(self, x, y, w, h, category):
+        Sprite.__init__(self)
+        self.image = pg.Surface((w, h))
+        self.image =pg.image.load(os.path.join(img_folder, 'Rock.png')).convert()
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+        self.category = category
+        self.speed = 0
+        if self.category == "moving":
+            self.speed = 5
+    # method (like a function) that updates the sprite...
+    def update(self):
+        if self.category == "moving":
+            self.rect.x += self.speed
+            if self.rect.x + self.rect.w > WIDTH or self.rect.x < 0:
+                self.speed = -self.speed
+class Fplatform(Sprite):
+    def __init__(self, game):
+        self.image = pg.Surface
+        self.image.fill(BROWN)
+        
 class Obstacle(pg.sprite.Sprite):
     def __init__(self, game):
         super().__init__()
@@ -56,6 +86,18 @@ class Obstacle(pg.sprite.Sprite):
         self.rect.y = HEIGHT - self.rect.height
         self.speed = -5
 
- 
+    def update(self):
+        self.rect.x += self.speed
+        if self.rect.right < 0:
+            self.rect.x = WIDTH
+            self.game.score += 1
+
+        self.vel += self.acc
+        self.rect.y += self.vel.y
+
+        # Keep the player on the screen
+        if self.rect.bottom > HEIGHT:
+            self.rect.bottom = HEIGHT
+            PLATFORM_LIST = True
     def update(self):
         pass
