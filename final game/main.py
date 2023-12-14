@@ -46,7 +46,7 @@ class Game:
         self.player = Player(self)
         # add instances to groups
         self.all_sprites.add(self.player)
-        self.ground = Platform(*GROUND)
+        self.ground = Fplatform(0, HEIGHT-100, WIDTH, 40, 'nothing')
         self.all_sprites.add(self.ground)
 
         for p in PLATFORM_LIST:

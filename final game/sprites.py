@@ -71,10 +71,24 @@ class Platform(Sprite):
             if self.rect.x + self.rect.w > WIDTH or self.rect.x < 0:
                 self.speed = -self.speed
 class Fplatform(Sprite):
-    def __init__(self, game):
-        self.image = pg.Surface
+    def __init__(self, x, y, w, h, category):
+        Sprite.__init__(self)
+        self.image = pg.Surface((w, h))
         self.image.fill(BROWN)
-        
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+        self.category = category
+        self.speed = 0
+        if self.category == "moving":
+            self.speed = 5
+    # method (like a function) that updates the sprite...
+    def update(self):
+        if self.category == "moving":
+            self.rect.x += self.speed
+            if self.rect.x + self.rect.w > WIDTH or self.rect.x < 0:
+                self.speed = -self.speed
+
 class Obstacle(pg.sprite.Sprite):
     def __init__(self, game):
         super().__init__()
