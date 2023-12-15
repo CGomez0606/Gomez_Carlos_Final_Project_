@@ -1,3 +1,7 @@
+# This file was created by: carlos gomez
+
+
+
 # import libraries and modules
 import pygame as pg
 from pygame.sprite import Sprite
@@ -55,10 +59,10 @@ class Game:
             self.all_sprites.add(plat)
             self.all_platforms.add(plat)
         # create mobs...
-        if random.randrange(100) < 0.8  :
-            obstacle = Obstacle(self)
-            self.obstacles.add(obstacle)
-            self.all_sprites.add(obstacle)
+        for m in range(0,10):
+            m = Mob(randint(0, WIDTH), randint(0, math.floor(HEIGHT/2)), 20, 20, "normal")
+            self.all_sprites.add(m)
+            self.all_mobs.add(m)
 
         self.run()
     
