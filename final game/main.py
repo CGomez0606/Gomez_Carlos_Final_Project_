@@ -40,6 +40,15 @@ class Game:
         self.all_sprites.add(self.obstacles)
         self.score = 0
         
+        self.background = Background('BG.png')
+
+        self.all_sprites.add(self.background)
+
+        self.finish_line = FinishLine(WIDTH * 2, HEIGHT - 40)
+
+        self.all_sprites.add(self.finish_line)
+
+        self.finish_line_passed = False  # Flag to check if the finish line is passed
     def new(self): 
         # create a group for all sprites
         self.score = 0
@@ -91,7 +100,9 @@ class Game:
                 if ghits:
                     self.player.pos.y = self.ground.rect.top
                     self.player.vel.y = 0
-
+        if self.player.rect.right > self.finish_line.rect.left and not self.finish_line_passed:
+            print("Finish Line Passed!")
+            self.finish_line_passed = True
     def events(self):
         for event in pg.event.get():
         # check for closed window
@@ -109,7 +120,13 @@ class Game:
     # Draw all sprites
         self.all_sprites.draw(self.screen)
         self.draw_text("Health: " + str(self.player.hitpoints), 22, WHITE, WIDTH/2, HEIGHT/10)
-
+        self.background.rect.x -= self.player.vel.x
+        # If the background goes off the screen, reset its position
+        if self.background.rect.right < WIDTH:
+            self.background.rect.x = 0
+ 
+        # Draw the finish line
+        pg.draw.rect(self.screen, RED, self.finish_line.rect)
     # After drawing everything, flip the display
         pg.display.flip()
 

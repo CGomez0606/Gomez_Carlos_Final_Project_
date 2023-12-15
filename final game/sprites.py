@@ -133,6 +133,15 @@ class Fplatform(PlatformBase):
 
         self.image.fill(BROWN)
  
+class FinishLine(Sprite):
+    def __init__(self, x, y):
+        super().__init__()
+        self.image = pg.Surface((WIDTH, 5))
+        self.image.fill(RED)
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+
 class Mob(Sprite):
     def __init__(self, x, y, w, h, kind):
         Sprite.__init__(self)
