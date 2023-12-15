@@ -1,6 +1,6 @@
-# This file was created by: carlos gomez
-# Mr.cozart showed us how to asdd floor
-
+# This file was created by: carlos gomez and Louis Brailey 
+# Mr.cozart showed us how to add floor
+#Chatgpt helped us instantiate new background image
 
 # import libraries and modules
 import pygame as pg
@@ -19,11 +19,14 @@ game_folder = os.path.dirname(__file__)
 img_folder = os.path.join(game_folder, 'images')
 snd_folder = os.path.join(game_folder, 'sounds')
 
+# initiate pygame
 pg.init()
 
+# set the background image up
 screen = pg.display.set_mode((WIDTH, HEIGHT))
 background = pg.image.load(os.path.join(img_folder, 'BG.png')).convert()
 
+# Main class
 class Game:
     def __init__(self):
         # init pygame and create a window
@@ -34,21 +37,17 @@ class Game:
         self.clock = pg.time.Clock()
         self.running = True
         self.all_sprites = pg.sprite.Group()
-        self.obstacles = pg.sprite.Group()
+        self.mobs = pg.sprite.Group()
         self.player = Player(self)
         self.all_sprites.add(self.player)    
-        self.all_sprites.add(self.obstacles)
+        self.all_sprites.add(self.mobs)
         self.score = 0
         
         self.background = Background('BG.png')
 
         self.all_sprites.add(self.background)
 
-        self.finish_line = FinishLine(WIDTH * 2, HEIGHT - 40)
-
-        self.all_sprites.add(self.finish_line)
-
-        self.finish_line_passed = False  # Flag to check if the finish line is passed
+        # self.finish_line_passed = False  # Flag to check if the finish line is passed
     def new(self): 
         # create a group for all sprites
         self.score = 0
@@ -69,7 +68,7 @@ class Game:
             self.all_platforms.add(plat)
         # create mobs...
         for m in range(0,10):
-            m = Mob(randint(0, WIDTH), randint(0, math.floor(HEIGHT/2)), 20, 20, "normal")
+            m = Mob(randint(0, WIDTH), randint(0, math.floor(HEIGHT/2)), 20, 20, 'moving')
             self.all_sprites.add(m)
             self.all_mobs.add(m)
 
@@ -100,9 +99,10 @@ class Game:
                 if ghits:
                     self.player.pos.y = self.ground.rect.top
                     self.player.vel.y = 0
-        if self.player.rect.right > self.finish_line.rect.left and not self.finish_line_passed:
-            print("Finish Line Passed!")
-            self.finish_line_passed = True
+        self.background.update(self.player.vel)
+
+        
+
     def events(self):
         for event in pg.event.get():
         # check for closed window
@@ -126,7 +126,7 @@ class Game:
             self.background.rect.x = 0
  
         # Draw the finish line
-        pg.draw.rect(self.screen, RED, self.finish_line.rect)
+    
     # After drawing everything, flip the display
         pg.display.flip()
 
@@ -156,9 +156,13 @@ class Background(pg.sprite.Sprite):
         # Set the initial position of the background
         self.rect.topleft = (0, 0)
 
-    def update(self):
+    def update(self, player_velocity):
         # You can add any update logic here if needed
-        pass
+        self.rect.x -= player_velocity.x
+
+        # If the background goes off the screen, reset its position
+        if self.rect.right < WIDTH:
+            self.rect.x = 0
 
 g = Game()
 while g.running:

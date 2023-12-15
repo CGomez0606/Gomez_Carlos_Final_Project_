@@ -1,3 +1,4 @@
+# This file was created by: Carlos Gomez and Louis Brailey 
 
 import pygame as pg
 
@@ -152,9 +153,23 @@ class Mob(Sprite):
         self.rect.y = y
         self.kind = kind
         self.pos = vec(WIDTH/2, HEIGHT/2)
- 
+        # tried to make the mobs move, the game works but mobs are still
+        self.mob = Mob
+        if self.mob == "moving":
+
+            self.speed = 5
     def update(self):
+        if self.mob == "moving":
+
+            self.rect.x += self.speed
+
+            if self.rect.x + self.rect.w > WIDTH or self.rect.x < 0:
+
+                self.speed = -self.speed
+    
+        
         pass
+
  
 # Additional improvements:
 
