@@ -1,6 +1,8 @@
 # This file was created by: carlos gomez and Louis Brailey 
 # Mr.cozart showed us how to add floor
 #Chatgpt helped us instantiate new background image
+# content from kids can code: http://kidscancode.org/blog/
+
 
 # import libraries and modules
 import pygame as pg
