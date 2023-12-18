@@ -1,5 +1,7 @@
-# This file was created by: carlos gomez and Louis Brailey 
-# Mr.cozart showed us how to add floor
+# This file was created by: carlos gomez and Louis Brailey
+# Sources 
+# Mr.cozort showed us how to add floor
+# Mr. cozort source code
 #Chatgpt helped us instantiate new background image
 # content from kids can code: http://kidscancode.org/blog/
 
@@ -85,8 +87,10 @@ class Game:
             self.draw()
 
     def update(self):
+        # suppoesed 
         self.all_sprites.update()
          # this prevents the player from jumping up through a platform
+        self.background.update(self.player.vel)
         hits = pg.sprite.spritecollide(self.player, self.all_platforms, False)
         ghits = pg.sprite.collide_rect(self.player, self.ground)
         if hits or ghits:
@@ -101,7 +105,7 @@ class Game:
                 if ghits:
                     self.player.pos.y = self.ground.rect.top
                     self.player.vel.y = 0
-        self.background.update(self.player.vel)
+        
 
         
 
@@ -115,17 +119,19 @@ class Game:
                 
     def draw(self):
         ############ Draw ################
-        # draw the background screen
+        # fill the background screen
         self.screen.fill(BLACK)
-        self.screen.blit(background, (0, 0))
+        # deaw the actual image
+        self.screen.blit(background, (self.background.rect.x, 0))
 
-    # Draw all sprites
+    # Draw all sprites    
         self.all_sprites.draw(self.screen)
+
+    
         self.draw_text("Health: " + str(self.player.hitpoints), 22, WHITE, WIDTH/2, HEIGHT/10)
-        self.background.rect.x -= self.player.vel.x
-        # If the background goes off the screen, reset its position
-        if self.background.rect.right < WIDTH:
-            self.background.rect.x = 0
+        
+        
+        
  
         # Draw the finish line
     
@@ -157,11 +163,13 @@ class Background(pg.sprite.Sprite):
 
         # Set the initial position of the background
         self.rect.topleft = (0, 0)
+        # set the speed 
+        self.speed = 1
 
     def update(self, player_velocity):
         # You can add any update logic here if needed
         self.rect.x -= player_velocity.x
-
+        self.rect.x -= self.speed
         # If the background goes off the screen, reset its position
         if self.rect.right < WIDTH:
             self.rect.x = 0
