@@ -153,8 +153,8 @@ class Mob(Sprite):
         self.rect.y = y
         self.kind = kind
         self.pos = vec(WIDTH/2, HEIGHT/2)
-        # tried to make the mobs move, the game works but mobs are still
-        self.mob = Mob
+        # makes the mobs move
+        self.mob = 'moving'
         if self.mob == "moving":
 
             self.speed = 5
