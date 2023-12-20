@@ -46,8 +46,8 @@ class Game:
         self.all_sprites.add(self.player)    
         self.all_sprites.add(self.mobs)
         self.score = 0
-        
-        self.background = Background('BG.png')
+        # load image from image folder as background
+        self.background = Background(self, 'BG.png')
 
         self.all_sprites.add(self.background)
 
@@ -89,8 +89,9 @@ class Game:
     def update(self):
         # suppoesed 
         self.all_sprites.update()
-         # this prevents the player from jumping up through a platform
-        self.background.update(self.player.vel)
+        self.background.update() 
+        
+        # this prevents the player from jumping up through a platform
         hits = pg.sprite.spritecollide(self.player, self.all_platforms, False)
         ghits = pg.sprite.collide_rect(self.player, self.ground)
         if hits or ghits:
@@ -122,7 +123,7 @@ class Game:
         # fill the background screen
         self.screen.fill(BLACK)
         # deaw the actual image
-        self.screen.blit(background, (self.background.rect.x, 0))
+        self.background.draw()
 
     # Draw all sprites    
         self.all_sprites.draw(self.screen)
@@ -154,25 +155,26 @@ class Game:
         pass
 
 class Background(pg.sprite.Sprite):
-    def __init__(self, image_path):
+    def __init__(self, game, image_path):
         super().__init__()
-
+        self.game = game
         # Load the background image
         self.image = pg.image.load(os.path.join(img_folder, image_path))
+        self.image2 = pg.image.load(os.path.join(img_folder, image_path))
         self.rect = self.image.get_rect()
 
         # Set the initial position of the background
         self.rect.topleft = (0, 0)
         # set the speed 
         self.speed = 1
-
-    def update(self, player_velocity):
-        # You can add any update logic here if needed
-        self.rect.x -= player_velocity.x
-        self.rect.x -= self.speed
-        # If the background goes off the screen, reset its position
+    def draw(self):
+        self.game.screen.blit(self.image, self.rect.topleft)
         if self.rect.right < WIDTH:
-            self.rect.x = 0
+            self.game.screen.blit(self.image2, self.rect.x + WIDTH)
+            print("scrolling....")
+    
+        
+
 
 g = Game()
 while g.running:

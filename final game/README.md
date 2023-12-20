@@ -1,6 +1,6 @@
 # Fall2023_final_project
 
-Simple overview of use/purpose.
+A game that is like mario but in a bellarmine theme. 
 
 ## Description
 
@@ -10,27 +10,26 @@ An in-depth paragraph about your project and overview of use.
 
 ### Dependencies
 
-* Describe any prerequisites, libraries, OS version, etc., needed before installing program.
-* ex. Windows 10
+ import pygame as pg
+from pygame.sprite import Sprite
+import random
+from random import randint
+import os
+from settings import *
+from sprites import *
+import math
 
 ### Installing
 
-* How/where to download your program
-* Any modifications needed to be made to files/folders
+Ask us for download or copy the code in python yourself
 
 ### Executing program
 
-* How to run the program
-* Step-by-step bullets
-```
-code blocks for commands
+Easy! just press play and start playing!
 ```
 
-## Help
 
-Any advise for common problems or issues.
-```
-command to run if program contains helper info
+
 ```
 
 ## Authors
@@ -50,16 +49,10 @@ ex. [@DomPizzie](https://twitter.com/dompizzie)
 
 ## License
 
-This project is licensed under the [NAME HERE] License - see the LICENSE.md file for details
+MIT 
 
 ## Acknowledgments
 
-Inspiration, code snippets, etc.
-* [awesome-readme](https://github.com/matiassingers/awesome-readme)
-* [PurpleBooth](https://gist.github.com/PurpleBooth/109311bb0361f32d87a2)
-* [dbader](https://github.com/dbader/readme-template)
-* [zenorocha](https://gist.github.com/zenorocha/4526327)
-* [fvcproductions](https://gist.github.com/fvcproductions/1bfc2d4aecb01a834b46)
-* [fvcproductions](https://gist.github.com/fvcproductions/1bfc2d4aecb01a834b46)
-* [fvcproductions](https://gist.github.com/fvcproductions/1bfc2d4aecb01a834b46)
-* [fvcproductions](https://gist.github.com/fvcproductions/1bfc2d4aecb01a834b46)
+Mr. Cozort course code files helped us a lot
+Mr. Cozort also helped us in office hours 
+Louis and I also used some chat gpt to help us with the background image

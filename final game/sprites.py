@@ -41,7 +41,10 @@ class Player(Sprite):
         self.acc = vec(0, 0)
 
         self.hitpoints = 100
- 
+
+    
+            
+
     def controls(self):
 
         keys = pg.key.get_pressed()
@@ -53,7 +56,7 @@ class Player(Sprite):
             self.acc.x = -5
 
         if keys[pg.K_d]:
-
+            
             self.acc.x = 5
 
         if keys[pg.K_SPACE]:
@@ -75,16 +78,16 @@ class Player(Sprite):
     def update(self):
 
         self.acc = vec(0, PLAYER_GRAV)
-
+        
         self.controls()
-
         self.acc.x += self.vel.x * -PLAYER_FRIC
-
         self.vel += self.acc
 
         self.pos += self.vel + 0.5 * self.acc
 
         self.rect.midbottom = self.pos
+
+    
  
 class PlatformBase(Sprite):
 
@@ -153,7 +156,10 @@ class Mob(Sprite):
         self.rect.y = y
         self.kind = kind
         self.pos = vec(WIDTH/2, HEIGHT/2)
+        
+        
         # makes the mobs move
+
         self.mob = 'moving'
         if self.mob == "moving":
 
@@ -162,6 +168,8 @@ class Mob(Sprite):
         if self.mob == "moving":
 
             self.rect.x += self.speed
+
+            
 
             if self.rect.x + self.rect.w > WIDTH or self.rect.x < 0:
 
